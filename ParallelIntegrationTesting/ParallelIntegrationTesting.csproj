@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MartinCostello.Logging.XUnit" Version="0.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+		<PackageReference Include="Npgsql" Version="8.0.4" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
+		<PackageReference Include="Testcontainers" Version="3.10.0" />
+		<PackageReference Include="Testcontainers.PostgreSQL" Version="3.10.0" />
+		<PackageReference Include="xunit" Version="2.9.2" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Xunit" />
+	</ItemGroup>
+	
+	<!-- MSBuild Task to check that the correct package is referenced to enable parallelization -->
+
+
+
+	<!--<PropertyGroup>
+		<SolutionDir Condition=" '$(SolutionDir)' == '' ">$(MSBuildProjectDirectory)\..\</SolutionDir>
+	</PropertyGroup>
+
+	<Target Name="CheckMeziantouPackageReference" AfterTargets="Build">
+		<PropertyGroup>
+			--><!-- Set the expected package reference here --><!--
+			<ExpectedPackageReference>Meziantou.Xunit.ParallelTestFramework</ExpectedPackageReference>
+		</PropertyGroup>
+
+		--><!-- List all referencing project files (CSProj) within the solution directory --><!--
+		<ItemGroup>
+			<ProjectFiles Include="$(SolutionDir)**\*.csproj" />
+		</ItemGroup>
+
+		<Message Text="Checking package references in referencing projects..." />
+
+		--><!-- Loop through all project files except the current project B --><!--
+		<ItemGroup>
+			<ReferencingProjects Include="@(ProjectFiles)" Condition="%(ProjectFiles.Identity) != '$(MSBuildThisFileFullPath)'" />
+		</ItemGroup>
+
+		--><!-- Read the content of the referencing projects' .csproj files --><!--
+		<ReadLinesFromFile File="%(ReferencingProjects.Identity)">
+			<Output TaskParameter="Lines" ItemName="ProjectFileLines" />
+		</ReadLinesFromFile>
+
+		--><!-- Check if the .csproj file contains the expected PackageReference --><!--
+		<FindUnderPath Files="@(ProjectFileLines)" Path="@(ExpectedPackageReference)">
+			<Output TaskParameter="InPath" ItemName="FoundPackages" />
+		</FindUnderPath>
+
+		--><!-- If no package references are found, raise an error --><!--
+		<Error Text="Project referencing B does not contain the expected package $(ExpectedPackageReference)" Condition="@(FoundPackages->Count()) == 0" />
+	</Target>-->
+
+
+
+</Project>
