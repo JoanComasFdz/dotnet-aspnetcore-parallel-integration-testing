@@ -4,11 +4,14 @@ namespace ParallelIntegrationTesting;
 
 public class PostgreSqlFixture : IAsyncLifetime
 {
-    public PostgreSqlContainer PostgreSqlContainer { get; private set; }
+    private readonly PostgreSqlContainer _postgreSqlContainer;
+    public string ConnectionString => _postgreSqlContainer is not null
+        ? _postgreSqlContainer.GetConnectionString()
+        : throw new InvalidOperationException("The PosgreSQLContainer has not been yet initialized.");
 
     public PostgreSqlFixture()
     {
-        PostgreSqlContainer = new PostgreSqlBuilder()
+        _postgreSqlContainer = new PostgreSqlBuilder()
             .WithDatabase("testdb")
             .WithUsername("postgres")
             .WithPassword("password")
@@ -19,13 +22,13 @@ public class PostgreSqlFixture : IAsyncLifetime
     public async Task InitializeAsync()
     {
         // Start the PostgreSQL container before any tests run
-        await PostgreSqlContainer.StartAsync();
+        await _postgreSqlContainer.StartAsync();
     }
 
     public async Task DisposeAsync()
     {
         // Stop and clean up the container after all tests have run
-        await PostgreSqlContainer.StopAsync();
-        await PostgreSqlContainer.DisposeAsync();
+        await _postgreSqlContainer.StopAsync();
+        await _postgreSqlContainer.DisposeAsync();
     }
 }

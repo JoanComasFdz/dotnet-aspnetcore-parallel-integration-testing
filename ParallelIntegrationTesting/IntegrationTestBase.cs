@@ -14,13 +14,13 @@ public class IntegrationTestBase<TProgram, TDbContext>(PostgreSqlFixture fixture
     where TProgram : class
     where TDbContext : DbContext
 {
-    private readonly PostgreSqlFixture _fixture = fixture;
+    private readonly string _connectionString = fixture.ConnectionString;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         // Generate a unique database name for each test
-        var uniqueDbName = $"moviesdb_{testOutputHelper.GetTestName().Replace(' ', '_')}";
-        var uniqueConnectionString = new NpgsqlConnectionStringBuilder(_fixture.PostgreSqlContainer.GetConnectionString())
+        var uniqueDbName = $"moviesdb_{testOutputHelper.GetTestName()}";
+        var uniqueConnectionString = new NpgsqlConnectionStringBuilder(this._connectionString)
         {
             Database = uniqueDbName
         }.ToString();
@@ -37,6 +37,7 @@ public class IntegrationTestBase<TProgram, TDbContext>(PostgreSqlFixture fixture
             // Add the unique database context configuration for the test
             services.AddDbContext<TDbContext>(options => options.UseNpgsql(uniqueConnectionString));
 
+            // Redirect logging to the test output
             services.AddLogging(logBuilder => logBuilder.AddXUnit(testOutputHelper));
         });
     }
