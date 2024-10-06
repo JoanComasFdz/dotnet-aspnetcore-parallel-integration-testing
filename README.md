@@ -35,7 +35,7 @@ The first time it may take longer since images may have to be dowloaded.
 
 > Important: The test container is **not** removed after the test execution. This is so that you can start it, remotely connect to it, and explore its databases.
 
-# How to use
+# How to use ParallelIntegrationTesting
 In your testing project:
 - Add a reference to ParallelIntegrationTesting
 - `dotnet add package Meziantou.Xunit.ParallelTestFramework`
@@ -54,3 +54,14 @@ In your testing classes:
 ---
  > To know more about how to parallelize or serialize test runs, check out https://github.com/meziantou/Meziantou.Xunit.ParallelTestFramework
 .
+
+## How it works
+The [PostgreSqlFixture](./ParallelIntegrationTesting/PostgreSqlFixture.cs) class contains the code for the PostgreSQL test container.
+
+The [IntegrationTestBase](./ParallelIntegrationTesting/IntegrationTestBase.cs) class:
+- Implements `IClassFixture<PostgreSqlFixture>` to share the instance of the PostgreSQL test container among all tests in the test class.
+- Overrides the `ConfigureWebHost()` method to:
+  - Generate a unique name for the DB, containing the current test name
+  - Generate a connection string with the new database name (using the one from the [PostgreSqlFixture](./ParallelIntegrationTesting/PostgreSqlFixture.cs) instance).
+  - Replace the `DbContextOptions` for a new one with the new connection string.
+  - Redirects the services logging to the test output (with the injected `ITestOutputHelper`).
