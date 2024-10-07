@@ -51,9 +51,6 @@ In your testing classes:
 {
 }
  ```
----
- > To know more about how to parallelize or serialize test runs, check out https://github.com/meziantou/Meziantou.Xunit.ParallelTestFramework
-.
 
 ## How it works
 The [PostgreSqlFixture](./ParallelIntegrationTesting/PostgreSqlFixture.cs) class contains the code for the PostgreSQL test container.
@@ -65,3 +62,10 @@ The [IntegrationTestBase](./ParallelIntegrationTesting/IntegrationTestBase.cs) c
   - Generate a connection string with the new database name (using the one from the [PostgreSqlFixture](./ParallelIntegrationTesting/PostgreSqlFixture.cs) instance).
   - Replace the `DbContextOptions` for a new one with the new connection string.
   - Redirects the services logging to the test output (with the injected `ITestOutputHelper`).
+
+The [MoviesApi.IntegrationTests.csproj](./MoviesApi.IntegrationTests/MoviesApi.IntegrationTests.csproj) has a reference to the nuget package [Meziantou.Xunit.ParallelTestFramework](https://www.nuget.org/packages/Meziantou.Xunit.ParallelTestFramework). This is what makes xUnit run all methods in parallel by default.
+
+---
+
+To know more about how to parallelize or serialize test runs, check out https://github.com/meziantou/Meziantou.Xunit.ParallelTestFramework
+.
